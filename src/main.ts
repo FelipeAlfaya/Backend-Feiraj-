@@ -2,24 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { IRequest } from './common/interfaces/request.interface';
 import { NextFunction } from 'express';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
-  let port = 3000;
-  let app;
-
-  while (!app) {
-    try {
-      app = await NestFactory.create(AppModule, { logger: false });
-      await app.listen(port, '0.0.0.0');
-    } catch (error) {
-      if (error.code === 'EADDRINUSE') {
-        console.log(`Port ${port} is already in use. Trying next port...`);
-        port++;
-      } else {
-        throw error;
-      }
-    }
-  }
+  const app = await NestFactory.create(AppModule);
 
   app.use((req: IRequest, res: Response, next: NextFunction) => {
     req.context = new Map<string, unknown>();
@@ -45,7 +31,10 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type, Authorization',
     credentials: true,
   });
-  console.log(`Server started on port ${port}`);
+
+  await app.listen(3030, '0.0.0.0', () => {
+    Logger.log('Server started on port 3030');
+  });
 }
 
 bootstrap();

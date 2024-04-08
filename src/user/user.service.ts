@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { hashSync } from 'bcrypt';
@@ -27,12 +27,12 @@ export class UserService {
     });
   }
 
-  async findAll(options: FindManyOptions<User>): Promise<User[]> {
-    return this.userRepository.find(options);
+  async findAll(): Promise<User[]> {
+    return this.userRepository.find();
   }
 
   async findOne(options: FindOneOptions<User>): Promise<User> {
-    const user = this.userRepository.findOne(options);
+    const user = await this.userRepository.findOne(options);
 
     if (!user) {
       throw new NotFoundException('Usuário não encontrado.');

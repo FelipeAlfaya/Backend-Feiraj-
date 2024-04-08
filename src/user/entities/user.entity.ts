@@ -5,16 +5,9 @@ import {
   Entity,
   Generated,
   PrimaryColumn,
-  TableInheritance,
 } from 'typeorm';
 
 @Entity()
-@TableInheritance({
-  column: {
-    type: 'varchar',
-    name: 'type',
-  },
-})
 export class User {
   @PrimaryColumn()
   @Generated('increment')
@@ -24,9 +17,6 @@ export class User {
     unique: true,
   })
   email: string;
-
-  @Column()
-  type: string;
 
   @Column({
     select: false,
@@ -47,10 +37,6 @@ export class User {
   @Column()
   updated_at: Date;
 
-  @Column({
-    type: 'float',
-    default: 5.0,
-  })
   @BeforeInsert()
   beforeInsertActions() {
     this.created_at = new Date();
