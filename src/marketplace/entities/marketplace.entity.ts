@@ -1,37 +1,38 @@
-import { MarketPlace } from 'src/marketplace/entities/marketplace.entity';
+import { Product } from 'src/product/entities/product.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   Entity,
   Generated,
-  OneToOne,
+  OneToMany,
   PrimaryColumn,
 } from 'typeorm';
 
 @Entity()
-export class User {
+export class MarketPlace {
   @PrimaryColumn()
   @Generated('increment')
   id: number;
 
+  @Column()
+  user_id: number;
+
   @Column({
     unique: true,
   })
-  email: string;
-
-  @Column({
-    select: false,
-  })
-  password: string;
-
-  @Column()
   name: string;
 
+  @Column()
+  description: string;
+
+  @Column()
+  logo: string;
+
   @Column({
-    nullable: true,
+    unique: true,
   })
-  avatar: string;
+  CNPJ: string;
 
   @Column()
   created_at: Date;
@@ -39,8 +40,8 @@ export class User {
   @Column()
   updated_at: Date;
 
-  @OneToOne(() => MarketPlace, (marketplace) => marketplace.user_id)
-  marketplace: MarketPlace;
+  @OneToMany(() => Product, (product) => product.marketplace)
+  products: Product[];
 
   @BeforeInsert()
   beforeInsertActions() {

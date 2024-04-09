@@ -5,33 +5,33 @@ import {
   Column,
   Entity,
   Generated,
-  OneToOne,
+  ManyToOne,
   PrimaryColumn,
 } from 'typeorm';
 
 @Entity()
-export class User {
+export class Product {
   @PrimaryColumn()
   @Generated('increment')
   id: number;
 
-  @Column({
-    unique: true,
-  })
-  email: string;
-
-  @Column({
-    select: false,
-  })
-  password: string;
-
   @Column()
   name: string;
 
-  @Column({
-    nullable: true,
-  })
-  avatar: string;
+  @Column()
+  description: string;
+
+  @Column()
+  price: number;
+
+  @Column()
+  quantity: number;
+
+  @Column()
+  status: string;
+
+  @Column()
+  image: string;
 
   @Column()
   created_at: Date;
@@ -39,7 +39,7 @@ export class User {
   @Column()
   updated_at: Date;
 
-  @OneToOne(() => MarketPlace, (marketplace) => marketplace.user_id)
+  @ManyToOne(() => MarketPlace, (marketplace) => marketplace.products)
   marketplace: MarketPlace;
 
   @BeforeInsert()

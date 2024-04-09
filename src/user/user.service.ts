@@ -1,6 +1,6 @@
 import {
+  BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -55,23 +55,21 @@ export class UserService {
     return this.userRepository.save(updatedUser);
   }
 
-  async remove(id: number): Promise<void> {
-    const user = await this.findOne({
-      where: { id },
-    });
+  async remove(options: FindOneOptions<User>): Promise<void> {
+    const user = await this.userRepository.findOne(options);
 
     if (!user) {
       throw new NotFoundException('Usuário não encontrado.');
     }
 
-    await this.userRepository.delete(id);
+    await this.userRepository.delete(user.id);
   }
 
   async emailAlreadyExists(email: string): Promise<void> {
     const user = await this.userRepository.findOne({ where: { email } });
 
     if (user) {
-      throw new InternalServerErrorException('Esse e-mail já está em uso.');
+      throw new BadRequestException('Esse e-mail já está em uso.');
     }
   }
 }
