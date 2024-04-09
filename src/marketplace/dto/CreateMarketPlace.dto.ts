@@ -7,13 +7,13 @@ export class CreateMarketPlaceDto {
   @IsNotEmpty()
   name: string;
 
+  @IsNotEmpty()
+  cnpj: string;
+
   @IsOptional()
   description: string;
 
   @IsOptional()
   @IsBase64()
   logo: string;
-
-  @IsNotEmpty()
-  CNPJ: string;
 }
