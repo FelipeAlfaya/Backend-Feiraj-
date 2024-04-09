@@ -39,7 +39,7 @@ export class User {
   @Column()
   updated_at: Date;
 
-  @OneToOne(() => MarketPlace, (marketplace) => marketplace.user_id)
+  @OneToOne(() => MarketPlace, (marketplace) => marketplace.user)
   marketplace: MarketPlace;
 
   @BeforeInsert()

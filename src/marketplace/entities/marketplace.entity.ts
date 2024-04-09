@@ -1,11 +1,14 @@
 import { Product } from 'src/product/entities/product.entity';
+import { User } from 'src/user/entities/user.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   Entity,
   Generated,
+  JoinTable,
   OneToMany,
+  OneToOne,
   PrimaryColumn,
 } from 'typeorm';
 
@@ -14,9 +17,6 @@ export class MarketPlace {
   @PrimaryColumn()
   @Generated('increment')
   id: number;
-
-  @Column()
-  user_id: number;
 
   @Column({
     unique: true,
@@ -29,10 +29,22 @@ export class MarketPlace {
   @Column()
   logo: string;
 
+  @Column()
+  street: string;
+
+  @Column()
+  city: string;
+
+  @Column()
+  state: string;
+
+  @Column()
+  postalCode: string;
+
   @Column({
     unique: true,
   })
-  CNPJ: string;
+  cnpj: string;
 
   @Column()
   created_at: Date;
@@ -41,7 +53,21 @@ export class MarketPlace {
   updated_at: Date;
 
   @OneToMany(() => Product, (product) => product.marketplace)
+  @JoinTable({
+    name: 'marketplace_products',
+    joinColumn: {
+      name: 'marketplace_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'product_id',
+      referencedColumnName: 'id',
+    },
+  })
   products: Product[];
+
+  @OneToOne(() => User, (user) => user.marketplace)
+  user: User;
 
   @BeforeInsert()
   beforeInsertActions() {

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 import { MarketPlace } from './entities/marketplace.entity';
@@ -11,6 +15,8 @@ export class MarketplaceService {
 
   async create(data: CreateMarketPlaceDto): Promise<MarketPlace> {
     const marketPlace = this.marketplaceRepository.create(data);
+
+    await this.CnpjAlreadyExists(marketPlace.cnpj);
 
     return this.marketplaceRepository.save(marketPlace).then((marketplace) => {
       return marketplace;
@@ -48,23 +54,23 @@ export class MarketplaceService {
     return this.marketplaceRepository.save(updatedMarketPlace);
   }
 
-  // async remove(options: FindOneOptions<MarketPlace>): Promise<void> {
-  //   const marketPlace = await this.marketplaceRepository.findOne(options);
+  async remove(options: FindOneOptions<MarketPlace>): Promise<void> {
+    const marketPlace = await this.marketplaceRepository.findOne(options);
 
-  //   if (!marketPlace) {
-  //     throw new NotFoundException('MarketPlace não encontrado.');
-  //   }
+    if (!marketPlace) {
+      throw new NotFoundException('MarketPlace não encontrado.');
+    }
 
-  //   await this.marketplaceRepository.delete(marketPlace);
-  // }
+    await this.marketplaceRepository.delete(marketPlace.id);
+  }
 
-  // async CnpjAlreadyExists(cnpj: string): Promise<void> {
-  //   const marketPlace = await this.marketplaceRepository.findOne({
-  //     where: { cnpj },
-  //   });
+  async CnpjAlreadyExists(cnpj: string): Promise<void> {
+    const marketPlace = await this.marketplaceRepository.findOne({
+      where: { cnpj },
+    });
 
-  //   if (marketPlace) {
-  //     throw new NotFoundException('CNPJ já cadastrado.');
-  //   }
-  // }
+    if (marketPlace) {
+      throw new BadRequestException('CNPJ já cadastrado.');
+    }
+  }
 }

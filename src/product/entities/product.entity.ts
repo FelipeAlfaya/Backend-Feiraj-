@@ -5,6 +5,7 @@ import {
   Column,
   Entity,
   Generated,
+  JoinTable,
   ManyToOne,
   PrimaryColumn,
 } from 'typeorm';
@@ -18,11 +19,19 @@ export class Product {
   @Column()
   name: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   description: string;
 
   @Column()
-  price: number;
+  type: string;
+
+  @Column()
+  buy_price: number;
+
+  @Column()
+  sell_price: number;
 
   @Column()
   quantity: number;
@@ -30,7 +39,9 @@ export class Product {
   @Column()
   status: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   image: string;
 
   @Column()
@@ -40,6 +51,17 @@ export class Product {
   updated_at: Date;
 
   @ManyToOne(() => MarketPlace, (marketplace) => marketplace.products)
+  @JoinTable({
+    name: 'marketplace_products',
+    joinColumn: {
+      name: 'product_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'marketplace_id',
+      referencedColumnName: 'id',
+    },
+  })
   marketplace: MarketPlace;
 
   @BeforeInsert()
